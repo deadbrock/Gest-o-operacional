@@ -1,0 +1,372 @@
+/* =========================================
+   🎨 PROFESSIONAL CORPORATE THEME
+   Enterprise-Grade Visual Design
+   ========================================= */
+
+/* Premium Logo Effect */
+.logo-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0066cc 0%, #004c99 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 8px 24px rgba(0, 102, 204, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+    );
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Professional Status Indicator */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(5, 150, 105, 0.1);
+    border: 1px solid rgba(5, 150, 105, 0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #059669;
+}
+
+.status-indicator::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #059669;
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(5, 150, 105, 0);
+    }
+}
+
+/* Premium Card Layout */
+.premium-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 10px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.premium-card:hover {
+    border-color: #0066cc;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.05),
+        0 20px 25px rgba(0, 102, 204, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Sophisticated Data Display */
+.data-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.data-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.data-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.data-trend.up {
+    background: rgba(5, 150, 105, 0.1);
+    color: #059669;
+}
+
+.data-trend.down {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+/* Executive Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+/* Professional Table Enhancement */
+.table-professional {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-professional thead th {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    color: #334e68;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 16px 20px;
+    border-bottom: 2px solid #0066cc;
+}
+
+.table-professional tbody tr {
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.table-professional tbody tr:hover {
+    background: #f8fafc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transform: scale(1.01);
+}
+
+.table-professional tbody td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Premium Badge System */
+.badge-professional {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid currentColor;
+}
+
+.badge-professional.primary {
+    background: rgba(0, 102, 204, 0.1);
+    color: #0066cc;
+    border-color: #0066cc;
+}
+
+.badge-professional.success {
+    background: rgba(5, 150, 105, 0.1);
+    color: #059669;
+    border-color: #059669;
+}
+
+.badge-professional.warning {
+    background: rgba(217, 119, 6, 0.1);
+    color: #d97706;
+    border-color: #d97706;
+}
+
+.badge-professional.danger {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Glassmorphism Effects */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Premium Icon Container */
+.icon-container {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: #0066cc;
+    font-size: 24px;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Enterprise Divider */
+.divider-professional {
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        #e5e7eb 20%, 
+        #e5e7eb 80%, 
+        transparent 100%
+    );
+    margin: 32px 0;
+}
+
+/* Professional Tooltip */
+.tooltip-professional {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-professional::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 8px 12px;
+    background: #0f172a;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-professional:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* Executive Header Bar */
+.executive-header {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 24px 32px;
+    margin: -40px -40px 32px -40px;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Metric Card Enhancements */
+.metric-value-large {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.metric-label-professional {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 8px;
+}
+
+/* Loading State - Professional */
+.skeleton-professional {
+    background: linear-gradient(
+        90deg,
+        #f1f5f9 0%,
+        #e2e8f0 50%,
+        #f1f5f9 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-professional 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes shimmer-professional {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Success Message */
+.success-message-professional {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-left: 4px solid #059669;
+    padding: 16px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.1);
+}
+
+/* Professional Footer */
+.footer-professional {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-top: 1px solid #e5e7eb;
+    padding: 24px 32px;
+    margin: 32px -40px -40px -40px;
+    border-radius: 0 0 20px 20px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .executive-header {
+        padding: 16px 20px;
+        margin: -20px -20px 24px -20px;
+    }
+    
+    .metric-value-large {
+        font-size: 36px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+
