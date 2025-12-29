@@ -1,12 +1,20 @@
 {
   "rewrites": [
     {
+      "source": "/app",
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/login.html",
+      "destination": "/public/login.html"
+    },
+    {
       "source": "/",
       "destination": "/public/login.html"
     },
     {
-      "source": "/app",
-      "destination": "/public/index.html"
+      "source": "/index.html",
+      "destination": "/public/login.html"
     },
     {
       "source": "/css/:path*",
@@ -17,8 +25,8 @@
       "destination": "/public/js/:path*"
     },
     {
-      "source": "/:path*",
-      "destination": "/public/:path*"
+      "source": "/:path+",
+      "destination": "/public/:path+"
     }
   ],
   "headers": [

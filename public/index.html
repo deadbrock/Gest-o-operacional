@@ -955,7 +955,7 @@
         // Verificação imediata de autenticação
         if (!localStorage.getItem('token')) {
             console.log('❌ Token não encontrado, redirecionando para login...');
-            window.location.href = '/';
+            window.location.href = '/login.html';
         } else {
             console.log('✅ Token encontrado, usuário autenticado');
         }
@@ -1007,7 +1007,7 @@
                 localStorage.removeItem('user');
                 
                 // Redirecionar para login
-                window.location.href = '/';
+                window.location.href = '/login.html';
             }
         }
         
