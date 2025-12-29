@@ -65,6 +65,41 @@ export class PassagemController {
 
   async criar(req: Request, res: Response) {
     try {
+      // Validar campos obrigatórios
+      const { solicitacaoId, tipo, companhia, origem, destino, dataIda, valorIda, valorTotal, status } = req.body;
+      
+      if (!solicitacaoId) {
+        return res.status(400).json({ 
+          error: 'Solicitação de Viagem é obrigatória', 
+          message: 'Por favor, selecione uma Solicitação de Viagem para vincular a passagem.' 
+        });
+      }
+      
+      if (!tipo || !companhia || !origem || !destino || !dataIda || !valorIda || !valorTotal) {
+        return res.status(400).json({ 
+          error: 'Campos obrigatórios não preenchidos', 
+          message: 'Por favor, preencha todos os campos obrigatórios (tipo, companhia, origem, destino, data ida e valores).' 
+        });
+      }
+      
+      // Verificar se solicitação existe
+      const solicitacao = await SolicitacaoViagem.findByPk(solicitacaoId);
+      if (!solicitacao) {
+        return res.status(404).json({ 
+          error: 'Solicitação não encontrada', 
+          message: `Solicitação de Viagem com ID ${solicitacaoId} não existe no sistema.` 
+        });
+      }
+      
+      // Validar status
+      const statusValidos = ['pendente', 'reservada', 'emitida', 'cancelada', 'utilizada'];
+      if (status && !statusValidos.includes(status)) {
+        return res.status(400).json({ 
+          error: 'Status inválido', 
+          message: `Status deve ser um dos seguintes: ${statusValidos.join(', ')}` 
+        });
+      }
+      
       const passagem = await Passagem.create(req.body);
       
       const passagemCompleta = await Passagem.findByPk(passagem.id, {
@@ -79,7 +114,10 @@ export class PassagemController {
       return res.status(201).json(passagemCompleta);
     } catch (error: any) {
       console.error('Erro ao criar passagem:', error);
-      return res.status(400).json({ error: 'Erro ao criar passagem', message: error.message });
+      return res.status(400).json({ 
+        error: 'Erro ao criar passagem', 
+        message: error.message || 'Erro desconhecido ao criar passagem.' 
+      });
     }
   }
 
