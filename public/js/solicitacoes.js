@@ -27,6 +27,7 @@ function renderSolicitacoesTable(solicitacoes) {
                         <th>Destino</th>
                         <th>Período</th>
                         <th>Status</th>
+                        <th>Pagamento</th>
                         <th>Custo Total</th>
                         <th>Ações</th>
                     </tr>
@@ -44,6 +45,19 @@ function renderSolicitacoesTable(solicitacoes) {
             'cancelada': 'secondary',
         };
         
+        const statusPagamentoColors = {
+            'pendente': 'secondary',
+            'solicitado': 'warning',
+            'pago': 'success',
+        };
+        
+        const statusPagamento = sol.statusPagamento || 'pendente';
+        const statusPagamentoTexto = {
+            'pendente': 'Pendente',
+            'solicitado': 'Solicitado',
+            'pago': 'Pago',
+        };
+        
         html += `
             <tr>
                 <td><strong>#${sol.id}</strong></td>
@@ -53,6 +67,11 @@ function renderSolicitacoesTable(solicitacoes) {
                 <td>
                     <span class="status-badge bg-${statusColors[sol.status]}">
                         ${sol.status.replace('_', ' ').toUpperCase()}
+                    </span>
+                </td>
+                <td>
+                    <span class="status-badge bg-${statusPagamentoColors[statusPagamento]}" title="${statusPagamento === 'solicitado' && sol.dataSolicitacaoPagamento ? 'Solicitado em ' + formatDate(sol.dataSolicitacaoPagamento) : ''}">
+                        💰 ${statusPagamentoTexto[statusPagamento]}
                     </span>
                 </td>
                 <td><strong>${formatCurrency(sol.custoTotal || 0)}</strong></td>
@@ -69,6 +88,11 @@ function renderSolicitacoesTable(solicitacoes) {
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="rejeitarSolicitacao(${sol.id})">
                             <i class="bi bi-x"></i>
+                        </button>
+                    ` : ''}
+                    ${(sol.status === 'aprovada' || sol.status === 'em_andamento') && statusPagamento === 'pendente' ? `
+                        <button class="btn btn-sm btn-warning" onclick="solicitarPagamento(${sol.id})" title="Solicitar Pagamento ao Financeiro">
+                            <i class="bi bi-cash-coin"></i> Pagamento
                         </button>
                     ` : ''}
                 </td>
@@ -335,6 +359,27 @@ async function rejeitarSolicitacao(id) {
     } catch (error) {
         console.error('Erro ao rejeitar solicitação:', error);
         alert('Erro ao rejeitar solicitação');
+    }
+}
+
+async function solicitarPagamento(id) {
+    if (!confirm('Deseja solicitar o pagamento desta viagem ao setor financeiro?\n\nUm email será enviado automaticamente com todos os detalhes.')) {
+        return;
+    }
+    
+    try {
+        const response = await api.solicitarPagamento(id);
+        
+        loadSolicitacoes();
+        
+        if (response.emailEnviado) {
+            alert('✅ Solicitação de pagamento enviada com sucesso!\n\nO setor financeiro receberá um email com todos os detalhes.');
+        } else {
+            alert('✅ Solicitação de pagamento registrada!\n\n⚠️ Email não foi enviado (modo desenvolvimento).\nVerifique a configuração de email no servidor.');
+        }
+    } catch (error) {
+        console.error('Erro ao solicitar pagamento:', error);
+        alert('❌ Erro ao solicitar pagamento:\n\n' + (error.message || 'Erro desconhecido'));
     }
 }
 

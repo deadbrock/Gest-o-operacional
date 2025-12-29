@@ -5,6 +5,7 @@ import Hospedagem from '../models/Hospedagem';
 import Passagem from '../models/Passagem';
 import DespesaRDV from '../models/DespesaRDV';
 import { Op } from 'sequelize';
+import EmailService from '../services/EmailService';
 
 export class SolicitacaoViagemController {
   async listar(req: Request, res: Response) {
@@ -277,6 +278,105 @@ export class SolicitacaoViagemController {
     } catch (error: any) {
       console.error('Erro ao calcular custo total:', error);
       return res.status(500).json({ error: 'Erro ao calcular custo total', message: error.message });
+    }
+  }
+
+  async solicitarPagamento(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      
+      // Buscar solicitação com todos os dados relacionados
+      const solicitacao = await SolicitacaoViagem.findByPk(id, {
+        include: [
+          {
+            model: Colaborador,
+            as: 'colaborador',
+            attributes: ['id', 'nome', 'email', 'departamento'],
+          },
+          {
+            model: Hospedagem,
+            as: 'hospedagens',
+          },
+          {
+            model: Passagem,
+            as: 'passagens',
+          },
+          {
+            model: DespesaRDV,
+            as: 'despesasRDV',
+          },
+        ],
+      });
+      
+      if (!solicitacao) {
+        return res.status(404).json({ error: 'Solicitação não encontrada' });
+      }
+
+      // Verificar se a solicitação está aprovada
+      if (solicitacao.status !== 'aprovada' && solicitacao.status !== 'em_andamento') {
+        return res.status(400).json({ 
+          error: 'Apenas solicitações aprovadas podem ter pagamento solicitado' 
+        });
+      }
+
+      // Verificar se já foi solicitado pagamento
+      if (solicitacao.statusPagamento === 'solicitado' || solicitacao.statusPagamento === 'pago') {
+        return res.status(400).json({ 
+          error: 'Pagamento já foi solicitado para esta solicitação' 
+        });
+      }
+
+      // Preparar dados para o email
+      const colaborador = (solicitacao as any).colaborador;
+      const hospedagens = (solicitacao as any).hospedagens || [];
+      const passagens = (solicitacao as any).passagens || [];
+      const despesasRDV = (solicitacao as any).despesasRDV || [];
+
+      const emailData = {
+        solicitacaoId: solicitacao.id,
+        colaboradorNome: colaborador?.nome || 'N/A',
+        colaboradorEmail: colaborador?.email || '',
+        departamento: colaborador?.departamento || 'N/A',
+        destino: solicitacao.destino,
+        dataInicio: solicitacao.dataInicio,
+        dataFim: solicitacao.dataFim,
+        custoTotal: parseFloat(solicitacao.custoTotal?.toString() || '0'),
+        hospedagens: hospedagens.map((h: any) => ({
+          hotel: h.hotel,
+          valor: parseFloat(h.valorTotal),
+          diarias: h.quantidadeDiarias || 0,
+        })),
+        passagens: passagens.map((p: any) => ({
+          origem: p.origem,
+          destino: p.destino,
+          valor: parseFloat(p.valorTotal),
+        })),
+        despesas: despesasRDV.map((d: any) => ({
+          descricao: d.descricao,
+          valor: parseFloat(d.valor),
+        })),
+      };
+
+      // Enviar email
+      const emailEnviado = await EmailService.enviarSolicitacaoPagamento(emailData);
+
+      // Atualizar status de pagamento
+      await solicitacao.update({
+        statusPagamento: 'solicitado',
+        dataSolicitacaoPagamento: new Date(),
+      });
+
+      return res.json({
+        message: 'Solicitação de pagamento enviada com sucesso',
+        emailEnviado,
+        solicitacao,
+      });
+    } catch (error: any) {
+      console.error('Erro ao solicitar pagamento:', error);
+      return res.status(500).json({ 
+        error: 'Erro ao solicitar pagamento', 
+        message: error.message 
+      });
     }
   }
 }

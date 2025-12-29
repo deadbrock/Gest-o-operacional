@@ -120,6 +120,18 @@ const api = {
         return await response.json();
     },
     
+    async solicitarPagamento(id) {
+        const response = await fetch(`${API_URL}/solicitacoes/${id}/solicitar-pagamento`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erro ao solicitar pagamento');
+        }
+        return await response.json();
+    },
+    
     // Hospedagens
     async getHospedagens(params = {}) {
         const queryString = new URLSearchParams(params).toString();

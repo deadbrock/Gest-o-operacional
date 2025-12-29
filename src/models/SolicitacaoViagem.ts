@@ -16,11 +16,16 @@ interface SolicitacaoViagemAttributes {
   aprovadoPor?: string;
   dataAprovacao?: Date;
   custoTotal?: number;
+  statusPagamento?: 'pendente' | 'solicitado' | 'pago';
+  dataSolicitacaoPagamento?: Date;
+  dataPagamento?: Date;
+  metodoPagamento?: string;
+  observacoesPagamento?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface SolicitacaoViagemCreationAttributes extends Optional<SolicitacaoViagemAttributes, 'id' | 'status' | 'projeto' | 'observacoes' | 'aprovadoPor' | 'dataAprovacao' | 'custoTotal'> {}
+interface SolicitacaoViagemCreationAttributes extends Optional<SolicitacaoViagemAttributes, 'id' | 'status' | 'projeto' | 'observacoes' | 'aprovadoPor' | 'dataAprovacao' | 'custoTotal' | 'statusPagamento' | 'dataSolicitacaoPagamento' | 'dataPagamento' | 'metodoPagamento' | 'observacoesPagamento'> {}
 
 class SolicitacaoViagem extends Model<SolicitacaoViagemAttributes, SolicitacaoViagemCreationAttributes> implements SolicitacaoViagemAttributes {
   public id!: number;
@@ -36,6 +41,11 @@ class SolicitacaoViagem extends Model<SolicitacaoViagemAttributes, SolicitacaoVi
   public aprovadoPor?: string;
   public dataAprovacao?: Date;
   public custoTotal?: number;
+  public statusPagamento?: 'pendente' | 'solicitado' | 'pago';
+  public dataSolicitacaoPagamento?: Date;
+  public dataPagamento?: Date;
+  public metodoPagamento?: string;
+  public observacoesPagamento?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -100,6 +110,27 @@ SolicitacaoViagem.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0,
+    },
+    statusPagamento: {
+      type: DataTypes.ENUM('pendente', 'solicitado', 'pago'),
+      allowNull: true,
+      defaultValue: 'pendente',
+    },
+    dataSolicitacaoPagamento: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    dataPagamento: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    metodoPagamento: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    observacoesPagamento: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

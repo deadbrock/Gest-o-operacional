@@ -44,6 +44,7 @@ router.delete('/solicitacoes/:id', solicitacaoViagemController.deletar);
 router.post('/solicitacoes/:id/aprovar', solicitacaoViagemController.aprovar);
 router.post('/solicitacoes/:id/rejeitar', solicitacaoViagemController.rejeitar);
 router.get('/solicitacoes/:id/custo-total', solicitacaoViagemController.calcularCustoTotal);
+router.post('/solicitacoes/:id/solicitar-pagamento', solicitacaoViagemController.solicitarPagamento);
 
 // Rotas de Hospedagens
 router.get('/hospedagens', hospedagemController.listar);
