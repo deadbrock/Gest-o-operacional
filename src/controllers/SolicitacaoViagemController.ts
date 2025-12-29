@@ -97,6 +97,32 @@ export class SolicitacaoViagemController {
 
   async criar(req: Request, res: Response) {
     try {
+      // Validar campos obrigatórios
+      const { colaboradorId, destino, motivo, dataInicio, dataFim, centroCusto } = req.body;
+      
+      if (!colaboradorId) {
+        return res.status(400).json({ 
+          error: 'Colaborador é obrigatório', 
+          message: 'Por favor, selecione um colaborador para a viagem.' 
+        });
+      }
+      
+      if (!destino || !motivo || !dataInicio || !dataFim || !centroCusto) {
+        return res.status(400).json({ 
+          error: 'Campos obrigatórios não preenchidos', 
+          message: 'Por favor, preencha todos os campos obrigatórios (colaborador, destino, motivo, datas e centro de custo).' 
+        });
+      }
+      
+      // Verificar se colaborador existe
+      const colaborador = await Colaborador.findByPk(colaboradorId);
+      if (!colaborador) {
+        return res.status(404).json({ 
+          error: 'Colaborador não encontrado', 
+          message: `Colaborador com ID ${colaboradorId} não existe no sistema.` 
+        });
+      }
+      
       const solicitacao = await SolicitacaoViagem.create(req.body);
       
       const solicitacaoCompleta = await SolicitacaoViagem.findByPk(solicitacao.id, {
@@ -111,7 +137,10 @@ export class SolicitacaoViagemController {
       return res.status(201).json(solicitacaoCompleta);
     } catch (error: any) {
       console.error('Erro ao criar solicitação:', error);
-      return res.status(400).json({ error: 'Erro ao criar solicitação', message: error.message });
+      return res.status(400).json({ 
+        error: 'Erro ao criar solicitação', 
+        message: error.message || 'Erro desconhecido ao criar solicitação.' 
+      });
     }
   }
 
