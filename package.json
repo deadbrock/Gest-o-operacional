@@ -10,6 +10,7 @@
     "init-db": "ts-node src/scripts/initDatabase.ts",
     "create-admin": "ts-node src/scripts/createAdmin.ts",
     "seed-policies": "ts-node src/scripts/seedPolicies.ts",
+    "add-pagamento-colunas": "ts-node src/scripts/addPagamentoColunas.ts",
     "setup": "npm run init-db && npm run create-admin && npm run seed-policies"
   },
   "keywords": [
