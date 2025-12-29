@@ -20,13 +20,13 @@ function isAuthenticated() {
 function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/login.html';
+    window.location.href = '/';
 }
 
 // Função para verificar autenticação na página
 function requireAuth() {
     if (!isAuthenticated()) {
-        window.location.href = '/login.html';
+        window.location.href = '/';
     }
 }
 
@@ -35,7 +35,7 @@ async function fetchWithAuth(url, options = {}) {
     const token = getToken();
     
     if (!token) {
-        window.location.href = '/login.html';
+        window.location.href = '/';
         return;
     }
     
@@ -143,12 +143,14 @@ window.fetch = function(url, options = {}) {
 };
 
 // Verificar autenticação ao carregar a página (exceto na página de login)
-if (!window.location.pathname.includes('login.html')) {
+// Verifica se está na página do app (index.html ou /app)
+if (window.location.pathname === '/app' || window.location.pathname.includes('index.html')) {
     if (isAuthenticated()) {
         displayUserInfo();
         applyPermissions();
     } else {
-        requireAuth();
+        // Se não estiver autenticado, redireciona para login
+        window.location.href = '/';
     }
 }
 

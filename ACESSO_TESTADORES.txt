@@ -1,0 +1,60 @@
+========================================
+  SISTEMA DE GESTÃO OPERACIONAL
+  Instruções de Acesso para Testadores
+========================================
+
+🌐 URL DE ACESSO:
+https://d132e027e6c1.ngrok-free.app
+
+👤 CREDENCIAIS:
+Usuário: admin
+Senha: admin123
+
+⚠️ IMPORTANTE - PRIMEIRA VEZ:
+1. Ao acessar a URL, você verá uma página de aviso do Ngrok
+2. Clique no botão "Visit Site" ou "Continuar"
+3. Aguarde alguns segundos
+4. A tela de login aparecerá
+
+✅ NAVEGADORES RECOMENDADOS:
+- Google Chrome (melhor)
+- Microsoft Edge
+- Firefox
+- Safari
+
+📱 FUNCIONA EM:
+- Computador (Windows/Mac/Linux)
+- Celular (Android/iPhone) - 4G/5G
+- Tablet
+- Qualquer rede Wi-Fi
+
+🐛 PROBLEMAS COMUNS:
+
+1. "Não é possível acessar o site"
+   → Clique em "Visit Site" na página de aviso do Ngrok
+
+2. "Conexão recusada"
+   → Aguarde 10 segundos e recarregue a página
+
+3. "Página não carrega"
+   → Limpe o cache do navegador (Ctrl+F5)
+   → Tente em modo anônimo
+
+4. "Erro 502 Bad Gateway"
+   → O servidor pode estar reiniciando
+   → Aguarde 30 segundos e tente novamente
+
+📞 REPORTAR PROBLEMAS:
+- Tire um print da tela
+- Descreva o que estava fazendo
+- Informe qual navegador está usando
+
+========================================
+
+🎉 Bons Testes!
+
+Observação: Esta URL é temporária e funciona apenas 
+enquanto o servidor e o Ngrok estiverem rodando.
+
+========================================
+

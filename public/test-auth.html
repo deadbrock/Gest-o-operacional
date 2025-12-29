@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Autenticação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #3498db; margin-top: 0; }
+        .info { 
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info-blue { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #2980b9; }
+        button.danger { background: #e74c3c; }
+        button.danger:hover { background: #c0392b; }
+        button.success { background: #27ae60; }
+        button.success:hover { background: #229954; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔐 Teste de Autenticação</h1>
+        <p>Esta página ajuda a diagnosticar problemas de autenticação.</p>
+    </div>
+
+    <div class="card">
+        <h2>📊 Status Atual</h2>
+        <div id="status"></div>
+    </div>
+
+    <div class="card">
+        <h2>🧪 Ações de Teste</h2>
+        <button onclick="checkAuth()">🔍 Verificar Autenticação</button>
+        <button class="danger" onclick="clearAuth()">🗑️ Limpar Autenticação</button>
+        <button class="success" onclick="goToLogin()">🔑 Ir para Login</button>
+        <button onclick="goToApp()">📱 Ir para App</button>
+    </div>
+
+    <div class="card">
+        <h2>📝 Log de Diagnóstico</h2>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
+
+        function addLog(message, type = 'info-blue') {
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML = `<div class="info ${type}">[${timestamp}] ${message}</div>` + logDiv.innerHTML;
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            let html = '';
+            
+            if (token) {
+                html += `<div class="info success">✅ Token encontrado no localStorage</div>`;
+                html += `<div class="info info-blue"><strong>Token:</strong><br>${token.substring(0, 50)}...</div>`;
+                addLog('Token encontrado', 'success');
+            } else {
+                html += `<div class="info error">❌ Nenhum token encontrado no localStorage</div>`;
+                addLog('Nenhum token encontrado', 'error');
+            }
+            
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    html += `<div class="info success">✅ Dados de usuário encontrados</div>`;
+                    html += `<div class="info info-blue"><strong>Usuário:</strong><br>Nome: ${userData.nome}<br>Email: ${userData.email}<br>Role: ${userData.role}</div>`;
+                    addLog(`Usuário logado: ${userData.nome} (${userData.email})`, 'success');
+                } catch (e) {
+                    html += `<div class="info error">❌ Erro ao ler dados do usuário: ${e.message}</div>`;
+                    addLog('Erro ao ler dados do usuário', 'error');
+                }
+            } else {
+                html += `<div class="info warning">⚠️ Nenhum dado de usuário encontrado</div>`;
+                addLog('Nenhum dado de usuário encontrado', 'warning');
+            }
+            
+            // Verificar URL atual
+            html += `<div class="info info-blue"><strong>URL Atual:</strong><br>${window.location.href}</div>`;
+            html += `<div class="info info-blue"><strong>Pathname:</strong><br>${window.location.pathname}</div>`;
+            
+            statusDiv.innerHTML = html;
+        }
+
+        function clearAuth() {
+            if (confirm('Tem certeza que deseja limpar todos os dados de autenticação?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                sessionStorage.clear();
+                
+                addLog('🗑️ Autenticação limpa com sucesso!', 'success');
+                statusDiv.innerHTML = '<div class="info success">✅ Autenticação limpa! Você pode testar o login novamente.</div>';
+                
+                setTimeout(() => {
+                    checkAuth();
+                }, 1000);
+            }
+        }
+
+        function goToLogin() {
+            addLog('Redirecionando para login...', 'info-blue');
+            window.location.href = '/';
+        }
+
+        function goToApp() {
+            addLog('Redirecionando para app...', 'info-blue');
+            window.location.href = '/app';
+        }
+
+        // Verificar automaticamente ao carregar
+        window.addEventListener('load', () => {
+            addLog('Página de teste carregada', 'info-blue');
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
+
