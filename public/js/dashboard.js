@@ -79,6 +79,14 @@ function renderMetrics(data) {
     
     const { custos = {}, solicitacoesPorStatus = [] } = data;
     
+    // Garantir valores numéricos para custos
+    const custosValidos = {
+        hospedagens: parseFloat(custos.hospedagens) || 0,
+        passagens: parseFloat(custos.passagens) || 0,
+        despesas: parseFloat(custos.despesas) || 0,
+        total: parseFloat(custos.total) || 0
+    };
+    
     // Contar solicitações por status
     const statusCount = {};
     if (Array.isArray(solicitacoesPorStatus)) {
@@ -89,7 +97,7 @@ function renderMetrics(data) {
     
     const metrics = [
         {
-            title: formatCurrency(custos.hospedagens),
+            title: formatCurrency(custosValidos.hospedagens),
             label: 'Hospedagens',
             subtitle: 'Custos com acomodação',
             icon: 'building',
@@ -98,7 +106,7 @@ function renderMetrics(data) {
             trendUp: true
         },
         {
-            title: formatCurrency(custos.passagens),
+            title: formatCurrency(custosValidos.passagens),
             label: 'Passagens',
             subtitle: 'Aéreas e terrestres',
             icon: 'ticket-perforated',
@@ -107,7 +115,7 @@ function renderMetrics(data) {
             trendUp: true
         },
         {
-            title: formatCurrency(custos.despesas),
+            title: formatCurrency(custosValidos.despesas),
             label: 'Despesas RDV',
             subtitle: 'Refeições e outros',
             icon: 'cash-stack',
@@ -116,7 +124,7 @@ function renderMetrics(data) {
             trendUp: true
         },
         {
-            title: formatCurrency(custos.total),
+            title: formatCurrency(custosValidos.total),
             label: 'Custo Total',
             subtitle: 'Investimento em viagens',
             icon: 'wallet2',
@@ -253,46 +261,59 @@ function renderCharts(data) {
     `;
     
     // Gráfico de Solicitações por Status
-    const ctxStatus = document.getElementById('chartStatus').getContext('2d');
-    new Chart(ctxStatus, {
-        type: 'doughnut',
-        data: {
-            labels: data.solicitacoesPorStatus.map(s => s.status),
-            datasets: [{
-                data: data.solicitacoesPorStatus.map(s => s.total),
-                backgroundColor: [
-                    '#667eea',
-                    '#10b981',
-                    '#f59e0b',
-                    '#ef4444',
-                    '#8b5cf6',
-                    '#14b8a6',
-                ],
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
+    const ctxStatus = document.getElementById('chartStatus')?.getContext('2d');
+    if (ctxStatus && data.solicitacoesPorStatus && Array.isArray(data.solicitacoesPorStatus) && data.solicitacoesPorStatus.length > 0) {
+        new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: data.solicitacoesPorStatus.map(s => s.status),
+                datasets: [{
+                    data: data.solicitacoesPorStatus.map(s => parseInt(s.total) || 0),
+                    backgroundColor: [
+                        '#667eea',
+                        '#10b981',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#8b5cf6',
+                        '#14b8a6',
+                    ],
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
                 },
             },
-        },
-    });
+        });
+    }
     
     // Gráfico de Custos
-    const ctxCustos = document.getElementById('chartCustos').getContext('2d');
-    new Chart(ctxCustos, {
-        type: 'bar',
-        data: {
-            labels: ['Hospedagens', 'Passagens', 'RDV'],
-            datasets: [{
-                label: 'Custos',
-                data: [data.custos.hospedagens, data.custos.passagens, data.custos.despesas],
-                backgroundColor: ['#667eea', '#10b981', '#f59e0b'],
-            }],
-        },
+    const ctxCustos = document.getElementById('chartCustos')?.getContext('2d');
+    const custosGrafico = {
+        hospedagens: parseFloat(data.custos?.hospedagens) || 0,
+        passagens: parseFloat(data.custos?.passagens) || 0,
+        despesas: parseFloat(data.custos?.despesas) || 0
+    };
+    
+    if (ctxCustos && (custosGrafico.hospedagens > 0 || custosGrafico.passagens > 0 || custosGrafico.despesas > 0)) {
+        new Chart(ctxCustos, {
+            type: 'bar',
+            data: {
+                labels: ['Hospedagens', 'Passagens', 'RDV'],
+                datasets: [{
+                    label: 'Custos',
+                    data: [
+                        custosGrafico.hospedagens, 
+                        custosGrafico.passagens, 
+                        custosGrafico.despesas
+                    ],
+                    backgroundColor: ['#667eea', '#10b981', '#f59e0b'],
+                }],
+            },
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -311,11 +332,12 @@ function renderCharts(data) {
                     },
                 },
             },
-        },
-    });
+        });
+    }
     
     // Top Colaboradores
-    const topColabHTML = data.topColaboradores.map((item, index) => {
+    const topColabHTML = (data.topColaboradores && Array.isArray(data.topColaboradores) && data.topColaboradores.length > 0) 
+        ? data.topColaboradores.map((item, index) => {
         const totalViagens = item.dataValues?.totalViagens || item.totalViagens || 0;
         const custoTotal = item.dataValues?.custoTotal || item.custoTotal || 0;
         const nomeColaborador = item.colaborador?.nome || 'N/A';
@@ -335,9 +357,13 @@ function renderCharts(data) {
                 </div>
             </div>
         `;
-    }).join('');
+        }).join('') 
+        : '<p class="text-center text-muted py-3">Nenhum dado disponível</p>';
     
-    document.getElementById('topColaboradores').innerHTML = topColabHTML || '<p class="text-center text-muted">Nenhum dado disponível</p>';
+    const topColabElement = document.getElementById('topColaboradores');
+    if (topColabElement) {
+        topColabElement.innerHTML = topColabHTML;
+    }
     
     // Gráfico de Hospedagens
     if (data.hospedagensPorStatus && data.hospedagensPorStatus.length > 0) {
