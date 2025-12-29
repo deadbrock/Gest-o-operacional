@@ -948,56 +948,86 @@
     
     <!-- Authentication Check (IMMEDIATE) -->
     <script>
+        // Proteção contra loops infinitos
+        let loadAttempts = 0;
+        const MAX_LOAD_ATTEMPTS = 3;
+        
         // Verificação imediata de autenticação
         if (!localStorage.getItem('token')) {
+            console.log('❌ Token não encontrado, redirecionando para login...');
             window.location.href = '/';
+        } else {
+            console.log('✅ Token encontrado, usuário autenticado');
         }
         
         // Exibir informações do usuário logado
         function displayUserInfo() {
-            const userStr = localStorage.getItem('user');
-            if (userStr) {
-                try {
-                    const user = JSON.parse(userStr);
-                    const nameDisplay = document.getElementById('userNameDisplay');
-                    const roleDisplay = document.getElementById('userRoleDisplay');
-                    
-                    if (nameDisplay) {
-                        nameDisplay.textContent = user.nome || user.email || 'Usuário';
-                    }
-                    
-                    if (roleDisplay) {
-                        const roleLabels = {
-                            'ADMIN': 'Administrador',
-                            'FINANCEIRO': 'Financeiro',
-                            'GESTOR': 'Gestor',
-                            'COLABORADOR': 'Colaborador'
-                        };
-                        roleDisplay.textContent = roleLabels[user.role] || user.role || 'Usuário';
-                    }
-                } catch (error) {
-                    console.error('Erro ao exibir informações do usuário:', error);
+            try {
+                const userStr = localStorage.getItem('user');
+                if (!userStr) {
+                    console.warn('⚠️ Dados do usuário não encontrados no localStorage');
+                    return;
                 }
+                
+                const user = JSON.parse(userStr);
+                console.log('👤 Usuário:', user);
+                
+                const nameDisplay = document.getElementById('userNameDisplay');
+                const roleDisplay = document.getElementById('userRoleDisplay');
+                
+                if (nameDisplay) {
+                    nameDisplay.textContent = user.nome || user.email || 'Usuário';
+                }
+                
+                if (roleDisplay) {
+                    const roleLabels = {
+                        'ADMIN': 'Administrador',
+                        'admin': 'Administrador',
+                        'FINANCEIRO': 'Financeiro',
+                        'financeiro': 'Financeiro',
+                        'GESTOR': 'Gestor',
+                        'gestor': 'Gestor',
+                        'COLABORADOR': 'Colaborador',
+                        'colaborador': 'Colaborador'
+                    };
+                    roleDisplay.textContent = roleLabels[user.role] || user.role || 'Usuário';
+                }
+            } catch (error) {
+                console.error('❌ Erro ao exibir informações do usuário:', error);
             }
         }
         
         // Função de logout
         function logout() {
             if (confirm('Deseja realmente sair do sistema?')) {
+                console.log('🚪 Fazendo logout...');
+                
                 // Limpar dados do localStorage
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                
-                // Mostrar mensagem
-                console.log('Logout realizado com sucesso');
                 
                 // Redirecionar para login
                 window.location.href = '/';
             }
         }
         
+        // Proteção global contra erros
+        window.addEventListener('error', function(e) {
+            console.error('❌ Erro global capturado:', e.error);
+            loadAttempts++;
+            
+            if (loadAttempts >= MAX_LOAD_ATTEMPTS) {
+                console.error('🛑 Muitas tentativas de carregamento. Parando para evitar loop.');
+                alert('Erro ao carregar o sistema. Por favor, faça logout e tente novamente.');
+                return false;
+            }
+        });
+        
         // Exibir informações do usuário quando a página carregar
-        window.addEventListener('DOMContentLoaded', displayUserInfo);
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 Página carregada');
+            displayUserInfo();
+        });
     </script>
     
     <!-- API Configuration (MUST BE FIRST) -->
