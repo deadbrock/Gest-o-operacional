@@ -65,6 +65,40 @@ export class DespesaRDVController {
 
   async criar(req: Request, res: Response) {
     try {
+      // Validar campos obrigatórios
+      const { solicitacaoId, data, tipo, valor } = req.body;
+      
+      if (!solicitacaoId) {
+        return res.status(400).json({ 
+          error: 'Solicitação de Viagem é obrigatória', 
+          message: 'Por favor, selecione uma Solicitação de Viagem para vincular a despesa.' 
+        });
+      }
+      
+      if (!data || !tipo || valor === undefined || valor === null) {
+        return res.status(400).json({ 
+          error: 'Campos obrigatórios não preenchidos', 
+          message: 'Por favor, preencha todos os campos obrigatórios (data, tipo e valor).' 
+        });
+      }
+      
+      // Verificar se solicitação existe
+      const solicitacao = await SolicitacaoViagem.findByPk(solicitacaoId);
+      if (!solicitacao) {
+        return res.status(404).json({ 
+          error: 'Solicitação não encontrada', 
+          message: `Solicitação de Viagem com ID ${solicitacaoId} não existe no sistema.` 
+        });
+      }
+      
+      // Validar valor
+      if (isNaN(parseFloat(valor)) || parseFloat(valor) < 0) {
+        return res.status(400).json({ 
+          error: 'Valor inválido', 
+          message: 'O valor da despesa deve ser um número positivo.' 
+        });
+      }
+      
       const despesa = await DespesaRDV.create(req.body);
       
       const despesaCompleta = await DespesaRDV.findByPk(despesa.id, {
@@ -79,7 +113,10 @@ export class DespesaRDVController {
       return res.status(201).json(despesaCompleta);
     } catch (error: any) {
       console.error('Erro ao criar despesa RDV:', error);
-      return res.status(400).json({ error: 'Erro ao criar despesa RDV', message: error.message });
+      return res.status(400).json({ 
+        error: 'Erro ao criar despesa RDV', 
+        message: error.message || 'Erro desconhecido ao criar despesa RDV.' 
+      });
     }
   }
 
