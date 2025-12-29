@@ -314,7 +314,7 @@ function renderCharts(data) {
                     backgroundColor: ['#667eea', '#10b981', '#f59e0b'],
                 }],
             },
-        options: {
+            options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
