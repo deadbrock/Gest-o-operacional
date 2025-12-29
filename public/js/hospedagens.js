@@ -218,21 +218,67 @@ async function loadHospedagemData(id) {
 }
 
 async function saveHospedagem(id) {
+    // Validar campos obrigatórios
+    const solicitacaoIdValue = document.getElementById('solicitacaoId').value;
+    const nomeHotel = document.getElementById('nomeHotel').value;
+    const cidade = document.getElementById('cidade').value;
+    const estado = document.getElementById('estado').value;
+    const dataCheckin = document.getElementById('dataCheckin').value;
+    const dataCheckout = document.getElementById('dataCheckout').value;
+    const numeroDiarias = document.getElementById('numeroDiarias').value;
+    const valorDiaria = document.getElementById('valorDiaria').value;
+    const valorTotal = document.getElementById('valorTotal').value;
+    
+    // Verificar se solicitação foi selecionada
+    if (!solicitacaoIdValue || solicitacaoIdValue === '') {
+        alert('⚠️ Por favor, selecione uma Solicitação de Viagem!');
+        document.getElementById('solicitacaoId').focus();
+        return;
+    }
+    
+    // Verificar outros campos obrigatórios
+    if (!nomeHotel || !cidade || !estado || !dataCheckin || !dataCheckout || !numeroDiarias || !valorDiaria || !valorTotal) {
+        alert('⚠️ Por favor, preencha todos os campos obrigatórios (*)');
+        return;
+    }
+    
     const data = {
-        solicitacaoId: parseInt(document.getElementById('solicitacaoId').value),
-        nomeHotel: document.getElementById('nomeHotel').value,
-        numeroReserva: document.getElementById('numeroReserva').value,
-        cidade: document.getElementById('cidade').value,
-        estado: document.getElementById('estado').value,
-        dataCheckin: document.getElementById('dataCheckin').value,
-        dataCheckout: document.getElementById('dataCheckout').value,
-        numeroDiarias: parseInt(document.getElementById('numeroDiarias').value),
-        valorDiaria: parseFloat(document.getElementById('valorDiaria').value),
-        valorTotal: parseFloat(document.getElementById('valorTotal').value),
+        solicitacaoId: parseInt(solicitacaoIdValue),
+        nomeHotel: nomeHotel.trim(),
+        numeroReserva: document.getElementById('numeroReserva').value.trim() || null,
+        cidade: cidade.trim(),
+        estado: estado.trim().toUpperCase(),
+        dataCheckin: dataCheckin,
+        dataCheckout: dataCheckout,
+        numeroDiarias: parseInt(numeroDiarias),
+        valorDiaria: parseFloat(valorDiaria),
+        valorTotal: parseFloat(valorTotal),
         incluiCafeManha: document.getElementById('incluiCafeManha').value === 'true',
         status: document.getElementById('status').value,
-        observacoes: document.getElementById('observacoes').value,
+        observacoes: document.getElementById('observacoes').value.trim() || null,
     };
+    
+    // Validar se solicitacaoId é um número válido
+    if (isNaN(data.solicitacaoId)) {
+        alert('⚠️ ID da solicitação inválido!');
+        return;
+    }
+    
+    // Validar valores numéricos
+    if (isNaN(data.numeroDiarias) || data.numeroDiarias < 1) {
+        alert('⚠️ Número de diárias inválido!');
+        return;
+    }
+    
+    if (isNaN(data.valorDiaria) || data.valorDiaria < 0) {
+        alert('⚠️ Valor da diária inválido!');
+        return;
+    }
+    
+    if (isNaN(data.valorTotal) || data.valorTotal < 0) {
+        alert('⚠️ Valor total inválido!');
+        return;
+    }
     
     try {
         if (id) {
@@ -243,10 +289,10 @@ async function saveHospedagem(id) {
         
         bootstrap.Modal.getInstance(document.getElementById('modalHospedagem')).hide();
         loadHospedagens();
-        alert(id ? 'Hospedagem atualizada com sucesso!' : 'Hospedagem cadastrada com sucesso!');
+        alert(id ? '✅ Hospedagem atualizada com sucesso!' : '✅ Hospedagem cadastrada com sucesso!');
     } catch (error) {
         console.error('Erro ao salvar hospedagem:', error);
-        alert('Erro ao salvar hospedagem');
+        alert('❌ Erro ao salvar hospedagem: ' + (error.message || 'Erro desconhecido'));
     }
 }
 
