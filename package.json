@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/scripts/addPagamentoColunas.js && node dist/server.js",
+    "start": "node dist/scripts/addPagamentoColunas.js && node dist/scripts/fixPassagemEnum.js && node dist/server.js",
     "init-db": "ts-node src/scripts/initDatabase.ts",
     "create-admin": "ts-node src/scripts/createAdmin.ts",
     "seed-policies": "ts-node src/scripts/seedPolicies.ts",
     "add-pagamento-colunas": "ts-node src/scripts/addPagamentoColunas.ts",
+    "fix-passagem-enum": "ts-node src/scripts/fixPassagemEnum.ts",
     "setup": "npm run init-db && npm run create-admin && npm run seed-policies"
   },
   "keywords": [
