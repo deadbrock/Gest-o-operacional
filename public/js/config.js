@@ -10,7 +10,7 @@ const isLocalhost = window.location.hostname === 'localhost' ||
 // URL base da API
 const API_BASE_URL = isLocalhost
   ? 'http://localhost:3002'  // Desenvolvimento local
-  : 'https://SEU_APP_RAILWAY.up.railway.app';  // ⚠️ SUBSTITUIR pela URL do Railway
+  : 'https://gest-o-operacional-production.up.railway.app';  // ✅ URL do Railway
 
 console.log('🌐 Ambiente:', isLocalhost ? 'Desenvolvimento' : 'Produção');
 console.log('🔗 API URL:', API_BASE_URL);
