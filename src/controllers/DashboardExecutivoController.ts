@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { sequelize } from '../config/database';
-import { Op } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 import SolicitacaoViagem from '../models/SolicitacaoViagem';
 import Colaborador from '../models/Colaborador';
 import Hospedagem from '../models/Hospedagem';
@@ -31,7 +31,7 @@ export class DashboardExecutivoController {
           [sequelize.fn('AVG', sequelize.col('custoTotal')), 'media'],
         ],
         raw: true,
-      });
+      }) as any;
 
       // Custo total
       const custoTotal = await SolicitacaoViagem.sum('custoTotal', { where: whereDate }) || 0;
@@ -42,7 +42,7 @@ export class DashboardExecutivoController {
           [sequelize.fn('AVG', sequelize.col('valorTotal')), 'media'],
         ],
         raw: true,
-      });
+      }) as any;
 
       // Ticket médio de passagem
       const ticketMedioPassagem = await Passagem.findOne({
@@ -50,14 +50,14 @@ export class DashboardExecutivoController {
           [sequelize.fn('AVG', sequelize.col('valorTotal')), 'media'],
         ],
         raw: true,
-      });
+      }) as any;
 
       // Tempo médio de aprovação (em dias)
-      const tempoMedioAprovacao = await sequelize.query(`
+      const tempoMedioAprovacao = await sequelize.query<{ media: number }>(`
         SELECT AVG(julianday(dataAprovacao) - julianday(createdAt)) as media
         FROM solicitacoes_viagem
         WHERE status = 'aprovada' AND dataAprovacao IS NOT NULL
-      `, { type: sequelize.QueryTypes.SELECT });
+      `, { type: QueryTypes.SELECT });
 
       // Taxa de aprovação
       const totalSolicitacoes = await SolicitacaoViagem.count({ where: whereDate });
@@ -115,7 +115,7 @@ export class DashboardExecutivoController {
         ORDER BY mes
       `, {
         replacements: { ano: anoAtual.toString() },
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       });
 
       return res.json({
@@ -213,7 +213,7 @@ export class DashboardExecutivoController {
         WHERE strftime('%Y', dataInicio) >= strftime('%Y', date('now', '-2 years'))
         GROUP BY strftime('%m', dataInicio)
         ORDER BY mes
-      `, { type: sequelize.QueryTypes.SELECT });
+      `, { type: QueryTypes.SELECT });
 
       return res.json(sazonalidade);
 
@@ -233,7 +233,7 @@ export class DashboardExecutivoController {
       const mesAtual = new Date().getMonth() + 1;
 
       // Calcular média mensal do ano atual
-      const mediaMensal = await sequelize.query(`
+      const mediaMensal = await sequelize.query<{ media: number }>(`
         SELECT AVG(custoMensal) as media
         FROM (
           SELECT SUM(custoTotal) as custoMensal
@@ -243,7 +243,7 @@ export class DashboardExecutivoController {
         )
       `, {
         replacements: { ano: anoAtual.toString() },
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       });
 
       const mediaValor = mediaMensal[0]?.media || 0;

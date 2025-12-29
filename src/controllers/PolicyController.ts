@@ -141,16 +141,25 @@ export class PolicyController {
       }
 
       // Buscar políticas em ordem de prioridade
+      const orConditions: any[] = [
+        { scope: PolicyScope.GLOBAL },
+      ];
+      
+      if (departamento) {
+        orConditions.push({ scope: PolicyScope.DEPARTAMENTO, scopeValue: departamento as string });
+      }
+      if (cargo) {
+        orConditions.push({ scope: PolicyScope.CARGO, scopeValue: cargo as string });
+      }
+      if (colaboradorId) {
+        orConditions.push({ scope: PolicyScope.COLABORADOR, scopeValue: colaboradorId as string });
+      }
+
       const policies = await Policy.findAll({
         where: {
           tipo: tipo as PolicyType,
           ativo: true,
-          [Op.or]: [
-            { scope: PolicyScope.GLOBAL },
-            { scope: PolicyScope.DEPARTAMENTO, scopeValue: departamento },
-            { scope: PolicyScope.CARGO, scopeValue: cargo },
-            { scope: PolicyScope.COLABORADOR, scopeValue: colaboradorId },
-          ],
+          [Op.or]: orConditions,
         },
         order: [['prioridade', 'DESC'], ['createdAt', 'DESC']],
       });
@@ -182,16 +191,25 @@ export class PolicyController {
       }
 
       // Buscar política aplicável
+      const orConditionsValidate: any[] = [
+        { scope: PolicyScope.GLOBAL },
+      ];
+      
+      if (departamento) {
+        orConditionsValidate.push({ scope: PolicyScope.DEPARTAMENTO, scopeValue: departamento });
+      }
+      if (cargo) {
+        orConditionsValidate.push({ scope: PolicyScope.CARGO, scopeValue: cargo });
+      }
+      if (colaboradorId) {
+        orConditionsValidate.push({ scope: PolicyScope.COLABORADOR, scopeValue: colaboradorId });
+      }
+
       const policies = await Policy.findAll({
         where: {
           tipo: tipo as PolicyType,
           ativo: true,
-          [Op.or]: [
-            { scope: PolicyScope.GLOBAL },
-            { scope: PolicyScope.DEPARTAMENTO, scopeValue: departamento },
-            { scope: PolicyScope.CARGO, scopeValue: cargo },
-            { scope: PolicyScope.COLABORADOR, scopeValue: colaboradorId },
-          ],
+          [Op.or]: orConditionsValidate,
         },
         order: [['prioridade', 'DESC']],
       });

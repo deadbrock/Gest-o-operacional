@@ -15,19 +15,34 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, '../public')));
+// ============================================
+// ROTAS CUSTOMIZADAS (ANTES DO STATIC)
+// ============================================
 
-// Servir arquivos de upload
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Rota principal - Sempre inicia pelo login
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/login.html'));
+});
+
+// Rota para o app principal
+app.get('/app', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 // Rotas da API
 app.use('/api', routes);
 
-// Rota principal
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
+// ============================================
+// ARQUIVOS ESTÁTICOS (DEPOIS DAS ROTAS)
+// ============================================
+
+// Servir arquivos estáticos (CSS, JS, imagens)
+app.use(express.static(path.join(__dirname, '../public'), {
+  index: false // NÃO servir index.html automaticamente
+}));
+
+// Servir arquivos de upload
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Inicialização do servidor
 const startServer = async () => {

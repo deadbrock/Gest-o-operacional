@@ -86,7 +86,7 @@ export class DocumentController {
         url: `/uploads/${req.file.filename}`,
         entityType: entityType as EntityType,
         entityId: parseInt(entityId),
-        uploadedBy,
+        uploadedBy: uploadedBy || 1, // Default para admin se não houver usuário
         descricao,
       });
 

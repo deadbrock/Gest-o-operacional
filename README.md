@@ -173,6 +173,92 @@ Após iniciar o servidor:
 
 ---
 
+## 🌐 Deploy e Testes em Outros Computadores
+
+### 🚀 Inicio Rápido
+
+Para disponibilizar o sistema para testes em outros computadores:
+
+**1. Execute o script automático (Recomendado):**
+```powershell
+powershell -ExecutionPolicy Bypass -File preparar-para-testes.ps1
+```
+
+**2. Ou siga o guia completo:**
+- 📖 **INICIO_RAPIDO_TESTES.md** - Guia rápido (5-10 minutos)
+- 📚 **GUIA_DEPLOY_TESTES.md** - Guia completo e detalhado
+- ⚙️ **CONFIGURACAO_ENV.md** - Configuração de variáveis
+
+### 🏠 Opção 1: Rede Local (Mesma Wi-Fi)
+
+**Ideal para:** Testes internos, escritório
+
+```bash
+# 1. Compile o projeto
+npm run build
+
+# 2. Inicie o servidor
+npm start
+
+# 3. Descubra seu IP
+ipconfig  # Windows
+ifconfig  # Linux/Mac
+
+# 4. Configure o firewall (Windows)
+# Libere a porta 3002 no Windows Defender
+
+# 5. Compartilhe com os usuários
+# Eles acessam: http://SEU_IP:3002
+```
+
+### ☁️ Opção 2: Nuvem (Acesso pela Internet)
+
+**Ideal para:** Testes remotos, home office
+
+#### Railway (Recomendado - Gratuito):
+```bash
+npm install -g @railway/cli
+railway login
+railway init
+railway up
+railway domain  # Obter URL pública
+```
+
+#### Render:
+- Conecte seu repositório GitHub em [render.com](https://render.com/)
+- Configure build: `npm install && npm run build`
+- Configure start: `npm start`
+
+#### Ngrok (Testes rápidos):
+```bash
+ngrok http 3002
+# Compartilhe a URL gerada
+```
+
+### 📱 Instruções para Testadores
+
+Após configurar, envie aos usuários:
+
+```
+🌐 URL: http://SEU_IP:3002 (ou URL da nuvem)
+👤 Usuário: admin
+🔑 Senha: [SUA_SENHA]
+
+✅ Use Chrome, Edge ou Firefox
+⚠️ Para rede local: conecte-se à mesma Wi-Fi
+```
+
+### ✅ Checklist Antes de Disponibilizar
+
+- [ ] Sistema compilado (`npm run build`)
+- [ ] Banco configurado (`npm run setup`)
+- [ ] Servidor testado localmente
+- [ ] Firewall configurado (rede local)
+- [ ] IP/URL anotado e testado
+- [ ] Instruções enviadas aos testadores
+
+---
+
 ## 📊 Estrutura do Projeto
 
 ```
