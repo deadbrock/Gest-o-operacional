@@ -409,6 +409,18 @@
             background: #0066cc;
             color: white;
         }
+        
+        .btn-outline-danger {
+            background: transparent;
+            border: 2px solid #dc2626;
+            color: #dc2626;
+        }
+        
+        .btn-outline-danger:hover {
+            background: #dc2626;
+            color: white;
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
+        }
 
         .btn-custom::before {
             content: '';
@@ -758,7 +770,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 align-items-center">
+                        <!-- Informações do Usuário -->
+                        <div class="d-none d-md-flex align-items-center me-3 px-3 py-2 rounded" 
+                             style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+                            <i class="bi bi-person-circle text-white me-2" style="font-size: 1.5rem;"></i>
+                            <div class="text-white">
+                                <div id="userNameDisplay" style="font-size: 0.875rem; font-weight: 600;">
+                                    Carregando...
+                                </div>
+                                <div id="userRoleDisplay" style="font-size: 0.75rem; opacity: 0.8;">
+                                    ...
+                                </div>
+                            </div>
+                        </div>
+                        
                         <button class="btn btn-outline-primary btn-custom" onclick="exportarDados()" 
                                 data-bs-toggle="tooltip" title="Exportar Relatórios">
                             <i class="bi bi-download"></i>
@@ -768,6 +794,13 @@
                                 data-bs-toggle="tooltip" title="Atualizar Dashboard">
                             <i class="bi bi-arrow-clockwise"></i>
                             <span class="d-none d-lg-inline ms-2">Atualizar</span>
+                        </button>
+                        
+                        <!-- Botão Sair -->
+                        <button class="btn btn-outline-danger btn-custom" onclick="logout()" 
+                                data-bs-toggle="tooltip" title="Sair do Sistema">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span class="d-none d-lg-inline ms-2">Sair</span>
                         </button>
                     </div>
                 </div>
@@ -919,6 +952,52 @@
         if (!localStorage.getItem('token')) {
             window.location.href = '/';
         }
+        
+        // Exibir informações do usuário logado
+        function displayUserInfo() {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    const nameDisplay = document.getElementById('userNameDisplay');
+                    const roleDisplay = document.getElementById('userRoleDisplay');
+                    
+                    if (nameDisplay) {
+                        nameDisplay.textContent = user.nome || user.email || 'Usuário';
+                    }
+                    
+                    if (roleDisplay) {
+                        const roleLabels = {
+                            'ADMIN': 'Administrador',
+                            'FINANCEIRO': 'Financeiro',
+                            'GESTOR': 'Gestor',
+                            'COLABORADOR': 'Colaborador'
+                        };
+                        roleDisplay.textContent = roleLabels[user.role] || user.role || 'Usuário';
+                    }
+                } catch (error) {
+                    console.error('Erro ao exibir informações do usuário:', error);
+                }
+            }
+        }
+        
+        // Função de logout
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema?')) {
+                // Limpar dados do localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                
+                // Mostrar mensagem
+                console.log('Logout realizado com sucesso');
+                
+                // Redirecionar para login
+                window.location.href = '/';
+            }
+        }
+        
+        // Exibir informações do usuário quando a página carregar
+        window.addEventListener('DOMContentLoaded', displayUserInfo);
     </script>
     
     <!-- API Configuration (MUST BE FIRST) -->
