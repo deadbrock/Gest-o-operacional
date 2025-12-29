@@ -211,16 +211,43 @@ async function loadSolicitacaoData(id) {
 }
 
 async function saveSolicitacao(id) {
+    // Validar campos obrigatórios
+    const colaboradorIdValue = document.getElementById('colaboradorId').value;
+    const destino = document.getElementById('destino').value;
+    const dataInicio = document.getElementById('dataInicio').value;
+    const dataFim = document.getElementById('dataFim').value;
+    const centroCusto = document.getElementById('centroCusto').value;
+    const motivo = document.getElementById('motivo').value;
+    
+    // Verificar se colaborador foi selecionado
+    if (!colaboradorIdValue || colaboradorIdValue === '') {
+        alert('⚠️ Por favor, selecione um colaborador!');
+        document.getElementById('colaboradorId').focus();
+        return;
+    }
+    
+    // Verificar outros campos obrigatórios
+    if (!destino || !dataInicio || !dataFim || !centroCusto || !motivo) {
+        alert('⚠️ Por favor, preencha todos os campos obrigatórios (*)');
+        return;
+    }
+    
     const data = {
-        colaboradorId: parseInt(document.getElementById('colaboradorId').value),
-        destino: document.getElementById('destino').value,
-        dataInicio: document.getElementById('dataInicio').value,
-        dataFim: document.getElementById('dataFim').value,
-        centroCusto: document.getElementById('centroCusto').value,
-        projeto: document.getElementById('projeto').value,
-        motivo: document.getElementById('motivo').value,
-        observacoes: document.getElementById('observacoes').value,
+        colaboradorId: parseInt(colaboradorIdValue),
+        destino: destino.trim(),
+        dataInicio: dataInicio,
+        dataFim: dataFim,
+        centroCusto: centroCusto.trim(),
+        projeto: document.getElementById('projeto').value.trim() || null,
+        motivo: motivo.trim(),
+        observacoes: document.getElementById('observacoes').value.trim() || null,
     };
+    
+    // Validar se colaboradorId é um número válido
+    if (isNaN(data.colaboradorId)) {
+        alert('⚠️ ID do colaborador inválido!');
+        return;
+    }
     
     try {
         if (id) {
@@ -231,10 +258,10 @@ async function saveSolicitacao(id) {
         
         bootstrap.Modal.getInstance(document.getElementById('modalSolicitacao')).hide();
         loadSolicitacoes();
-        alert(id ? 'Solicitação atualizada com sucesso!' : 'Solicitação cadastrada com sucesso!');
+        alert(id ? '✅ Solicitação atualizada com sucesso!' : '✅ Solicitação cadastrada com sucesso!');
     } catch (error) {
         console.error('Erro ao salvar solicitação:', error);
-        alert('Erro ao salvar solicitação');
+        alert('❌ Erro ao salvar solicitação: ' + (error.message || 'Erro desconhecido'));
     }
 }
 
