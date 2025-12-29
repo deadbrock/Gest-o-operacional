@@ -10,8 +10,36 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-// Middlewares
-app.use(cors());
+// Configuração de CORS para permitir frontend no Vercel
+const allowedOrigins = [
+  'http://localhost:3002',
+  'http://localhost:3000',
+  'http://127.0.0.1:3002',
+  process.env.FRONTEND_URL,  // URL do Vercel (configurar no Railway)
+].filter(Boolean);  // Remove undefined
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir requisições sem origem (mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    
+    // Permitir qualquer subdomínio do Vercel em desenvolvimento
+    if (origin.includes('.vercel.app') || origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Verificar lista de origens permitidas
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Origem não permitida pelo CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

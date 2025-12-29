@@ -1,5 +1,6 @@
 // Configuração da API
-const API_URL = 'http://localhost:3002/api';
+// A URL base vem do config.js (carregado antes deste arquivo)
+const API_URL = (window.API_BASE_URL || 'http://localhost:3002') + '/api';
 
 // Funções auxiliares
 const formatCurrency = (value) => {
