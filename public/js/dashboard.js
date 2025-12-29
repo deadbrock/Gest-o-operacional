@@ -336,29 +336,31 @@ function renderCharts(data) {
     }
     
     // Top Colaboradores
-    const topColabHTML = (data.topColaboradores && Array.isArray(data.topColaboradores) && data.topColaboradores.length > 0) 
-        ? data.topColaboradores.map((item, index) => {
-        const totalViagens = item.dataValues?.totalViagens || item.totalViagens || 0;
-        const custoTotal = item.dataValues?.custoTotal || item.custoTotal || 0;
-        const nomeColaborador = item.colaborador?.nome || 'N/A';
-        const departamento = item.colaborador?.departamento || 'N/A';
-        
-        return `
-            <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-                <div>
-                    <strong>${index + 1}. ${nomeColaborador}</strong>
-                    <br>
-                    <small class="text-muted">${departamento}</small>
+    let topColabHTML = '<p class="text-center text-muted py-3">Nenhum dado disponível</p>';
+    
+    if (data.topColaboradores && Array.isArray(data.topColaboradores) && data.topColaboradores.length > 0) {
+        topColabHTML = data.topColaboradores.map((item, index) => {
+            const totalViagens = item.dataValues?.totalViagens || item.totalViagens || 0;
+            const custoTotal = item.dataValues?.custoTotal || item.custoTotal || 0;
+            const nomeColaborador = item.colaborador?.nome || 'N/A';
+            const departamento = item.colaborador?.departamento || 'N/A';
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <div>
+                        <strong>${index + 1}. ${nomeColaborador}</strong>
+                        <br>
+                        <small class="text-muted">${departamento}</small>
+                    </div>
+                    <div class="text-end">
+                        <strong>${totalViagens} viagens</strong>
+                        <br>
+                        <small class="text-muted">${formatCurrency(custoTotal)}</small>
+                    </div>
                 </div>
-                <div class="text-end">
-                    <strong>${totalViagens} viagens</strong>
-                    <br>
-                    <small class="text-muted">${formatCurrency(custoTotal)}</small>
-                </div>
-            </div>
-        `;
-        }).join('') 
-        : '<p class="text-center text-muted py-3">Nenhum dado disponível</p>';
+            `;
+        }).join('');
+    }
     
     const topColabElement = document.getElementById('topColaboradores');
     if (topColabElement) {
