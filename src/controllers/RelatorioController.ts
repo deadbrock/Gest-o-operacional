@@ -51,10 +51,10 @@ export class RelatorioController {
           {
             model: Colaborador,
             as: 'colaborador',
-            attributes: ['nome', 'departamento'],
+            attributes: ['id', 'nome', 'departamento'],
           },
         ],
-        group: ['colaboradorId'],
+        group: ['colaboradorId', 'colaborador.id', 'colaborador.nome', 'colaborador.departamento'],
         order: [[sequelize.fn('COUNT', sequelize.col('SolicitacaoViagem.id')), 'DESC']],
         limit: 5,
         raw: false,
@@ -64,13 +64,14 @@ export class RelatorioController {
       const custosPorDepartamento = await SolicitacaoViagem.findAll({
         where: whereDate,
         attributes: [
-          [sequelize.fn('SUM', sequelize.col('custoTotal')), 'total'],
+          [sequelize.col('colaborador.departamento'), 'departamento'],
+          [sequelize.fn('SUM', sequelize.col('SolicitacaoViagem.custoTotal')), 'total'],
         ],
         include: [
           {
             model: Colaborador,
             as: 'colaborador',
-            attributes: ['departamento'],
+            attributes: [],
           },
         ],
         group: ['colaborador.departamento'],

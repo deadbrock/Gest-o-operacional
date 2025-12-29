@@ -70,13 +70,22 @@ function showErrorState() {
 function renderMetrics(data) {
     const metricsContainer = document.getElementById('metricsContainer');
     
-    const { custos, solicitacoesPorStatus } = data;
+    // Verificar se os dados existem
+    if (!data || typeof data !== 'object') {
+        console.error('Dados inválidos recebidos:', data);
+        showErrorState();
+        return;
+    }
+    
+    const { custos = {}, solicitacoesPorStatus = [] } = data;
     
     // Contar solicitações por status
     const statusCount = {};
-    solicitacoesPorStatus.forEach(item => {
-        statusCount[item.status] = parseInt(item.total);
-    });
+    if (Array.isArray(solicitacoesPorStatus)) {
+        solicitacoesPorStatus.forEach(item => {
+            statusCount[item.status] = parseInt(item.total) || 0;
+        });
+    }
     
     const metrics = [
         {
